@@ -3,6 +3,8 @@ class PatientsController < ApplicationController
     render json: Patient.all
   end
 
+
+
   def show
     patient = Patient.find params[:id]
     if patient.nil?
@@ -18,6 +20,11 @@ class PatientsController < ApplicationController
       "person_names.firstname LIKE ? AND person_names.lastname LIKE ?",
       "%#{posted_params['firstname']}%", "%#{posted_params['lastname']}%"
     )
+  end
+
+  def count
+    my_hash = {"users" => User.count, "patients" => Patient.count, "People": Person.count}
+    render json: my_hash
   end
 
   def create
@@ -73,7 +80,7 @@ class PatientsController < ApplicationController
       # linked to the same person.
       raise ArgumentError.new(
         "Person ##{person.id} already attached to patient ##{person.patient.id}"
-      ) unless person.patient.nil?  
+      ) unless person.patient.nil?
 
       Patient.new person: person
     end
@@ -85,7 +92,7 @@ class PatientsController < ApplicationController
       person = get_target_person
 
       patient.person = person
-      patient
+
     end
 
     def get_target_person
@@ -103,7 +110,7 @@ class PatientsController < ApplicationController
 
     def get_posted_params(required = [])
       required = required.dup
-      
+
       processed_params = JSON.parse(request.body.read).inject({}) do |hash, items|
         key, value = items
 
@@ -127,5 +134,5 @@ class PatientsController < ApplicationController
 
       processed_params
     end
-    
+
 end
