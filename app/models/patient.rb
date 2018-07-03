@@ -25,4 +25,7 @@ class Patient < ApplicationRecord
     def generate_uuid
         self.uuid = SecureRandom.uuid
     end
+
+    def count
+    end
 end

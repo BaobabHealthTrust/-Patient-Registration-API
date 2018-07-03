@@ -72,7 +72,7 @@ class PeopleController < ApplicationController
     def process_create_params
       data = JSON.parse request.body.read
       validate_params data, PERSON_NAME_FIELDS
-
+      puts data
       person = Person.new(
         person_name: PersonName.new(
           firstname: data['firstname'],
@@ -81,6 +81,9 @@ class PeopleController < ApplicationController
         birthdate: data['birthdate'],
         gender: data['gender']
       )
+
+
+
     end
 
     def process_update_params

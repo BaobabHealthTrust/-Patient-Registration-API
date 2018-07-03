@@ -5,12 +5,14 @@ Rails.application.routes.draw do
   get 'login', to: 'users#check_login' # Returns logged in user if any
   post 'login', to: 'users#login'
   post 'logout', to: 'users#logout'
+  get 'count', to: 'patients#count'
 
   resources :people
   post 'people/search', to: 'people#search'
 
   resources :patients
   post 'patients/search', to: 'patients#search'
+
 
   resources :users
   resources :roles
