@@ -72,7 +72,6 @@ class PeopleController < ApplicationController
     def process_create_params
       data = JSON.parse request.body.read
       validate_params data, PERSON_NAME_FIELDS
-      puts data
       person = Person.new(
         person_name: PersonName.new(
           firstname: data['firstname'],
@@ -89,8 +88,26 @@ class PeopleController < ApplicationController
     def process_update_params
       data = JSON.parse request.body.read
       person = Person.find(params[:id])
-      person.nil? ? nil
-                  : person.update(data) and person
+      return nil unless person
+
+      save_name = false
+
+      %w{firstname lastname}.each do |key|
+        case key
+        when 'firstname'
+          person.person_name.firstname = data['firstname']
+          data.delete key
+          save_name = true
+        when 'lastname'
+          person.person_name.lastname = data['lastname']
+          data.delete key
+          save_name = true
+        end
+      end
+
+      person.person_name.save if save_name
+      person.update(data) unless data.empty?
+      person
     end
 
     def validate_params(params, fields)
