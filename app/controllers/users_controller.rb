@@ -177,13 +177,17 @@ class UsersController < ApplicationController
     end
 
     def get_person_by_id(person_id)
-      if StringUtils::is_empty_string? person_id
-        raise ArgumentError.new 'person_id can not be blank'
-      elsif !person_id.match? /^\d+$/
-        raise ArgumentError.new "person_id ##{person_id} is invalid"
+      if person_id.is_a? String
+        if StringUtils::is_empty_string? person_id
+          raise ArgumentError.new 'person_id can not be blank'
+        elsif !person_id.match? /^\d+$/
+          raise ArgumentError.new "person_id ##{person_id} is invalid"
+        end
+        person_id = person_id.to_i
       end
+      # else we are dealing with an integer (goose typing...)
 
-      person = Person.find(person_id.to_i)
+      person = Person.find(person_id)
       raise ArgumentError.new "Person ##{person_id} not found" if person.nil?
       person
     end
